@@ -7,6 +7,7 @@ namespace Octoper\BladeComponents\Tags;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 use Illuminate\View\ComponentAttributeBag;
@@ -65,6 +66,10 @@ class BladeComponent extends Tags
      */
     protected function guessClassName(string $component): string
     {
+        // Check aliased components
+        $componentAliases = Blade::getClassComponentAliases();
+        if($aliasClass = Arr::get($componentAliases, $component)) return $aliasClass;
+
         $namespace = Container::getInstance()
             ->make(Application::class)
             ->getNamespace();
